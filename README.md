@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Zalo Mini App
 
 ## Development
@@ -45,3 +46,7 @@
 - [DevTools Documentation](https://mini.zalo.me/docs/dev-tools/)
 - [Ready-made Mini App Templates](https://mini.zalo.me/zaui-templates)
 - [Community Support](https://mini.zalo.me/community)
+=======
+# Nhom10_NMCNPN_PTIT
+Mini App Đặt Lịch Hẹn Cắt Tóc 
+>>>>>>> f36b8eec1be1edd8dfef2f159a1a6e5b6726eb9b
