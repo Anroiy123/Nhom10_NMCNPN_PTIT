@@ -1,18 +1,19 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom"; //hook useNavigate dùng để điều hướng trang
+import { motion } from "framer-motion"; // component motion dùng để tạo hiệu ứng
 import barberBackground from "../assets/images/barber-background.png";
 import bookbarberLogo from "../assets/images/bookbarber-logo.png";
 
 const WelcomeScreen: React.FC = () => {
+  // khai báo component với kiểu React.FC
   const navigate = useNavigate();
 
   const handleRegisterPress = () => {
-    navigate("/auth"); // Sửa từ "/register" thành "/auth" để dẫn đến AuthScreen
+    navigate("/auth"); // điều hướng đến AuthScreen
   };
 
   const handleStartPress = () => {
-    navigate("/home"); // Giữ nguyên, dẫn đến HomePage
+    navigate("/home"); // điều hướng dến HomePage
   };
 
   return (
@@ -33,7 +34,6 @@ const WelcomeScreen: React.FC = () => {
               (e.currentTarget.src = "/path/to/fallback-image.jpg")
             }
           />
-          <h1 className="app-name">BookBarber</h1>
         </motion.div>
 
         <motion.div
@@ -140,14 +140,20 @@ const WelcomeScreen: React.FC = () => {
             transform: scale(1.05);
           }
           .register-button {
+            font-family: monospace;
+            font-size: 20px;
             background: transparent;
             border: 1.5px solid #FFD700;
             color: #FFD700;
+            font-weight: 800;
           }
           .start-button {
+            font-family: monospace;
+            font-size: 20px;
             background: #FFD700;
             color: #000000;
             border: none;
+            font-weight: 800;
           }
           @media (max-width: 320px) {
             .headline {

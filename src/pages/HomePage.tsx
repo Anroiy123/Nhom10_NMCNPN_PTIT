@@ -11,16 +11,16 @@ import {
   MessageCircle,
   User,
   Star,
-  ChevronDown, // Đã import
+  ChevronDown,
 } from "lucide-react";
-import { useState } from "react"; // Đã có useState
+import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Settings } from "react-slick";
-import babershop from "../assets/images/barber-shop.jpg"; // Đảm bảo đường dẫn đúng
+import babershop from "../assets/images/barber-shop.jpg";
 
 // --- Interfaces ---
 interface Appointment {
@@ -350,7 +350,7 @@ export default function HomePage() {
     slidesToScroll: 1,
     arrows: false,
     autoplay: true,
-    autoplaySpeed: 3000,
+    autoplaySpeed: 1500,
     lazyLoad: "ondemand" as const,
   };
 

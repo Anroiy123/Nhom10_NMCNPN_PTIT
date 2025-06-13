@@ -16,6 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+// import 2 hook của thư viện React Router.
 import { useState, useEffect } from "react";
 import avatar from "../assets/images/avatar.jpg";
 

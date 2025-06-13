@@ -23,7 +23,6 @@ interface BarberShop {
   reviews: number;
   distance: string;
   image: string;
-  // area?: string; // Có thể thêm để lọc theo khu vực
 }
 
 // --- BarberShopCard Component (Tách riêng) ---
@@ -73,14 +72,14 @@ export default function DiscoverPage() {
   const location = useLocation();
 
   // --- States ---
-  const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [filter, setFilter] = useState<"distance" | "rating" | "">("");
-  const [barberShops, setBarberShops] = useState<BarberShop[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState("TP. Hồ Chí Minh");
-  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); // Trạng thái tìm kiếm
+  const [debouncedQuery, setDebouncedQuery] = useState(""); // Trạng thái tìm kiếm đã debounce
+  const [filter, setFilter] = useState<"distance" | "rating" | "">(""); // Trạng thái bộ lọc
+  const [barberShops, setBarberShops] = useState<BarberShop[]>([]); // Trạng thái danh sách tiệm cắt tóc
+  const [isLoading, setIsLoading] = useState(true); // Trạng thái loading
+  const [error, setError] = useState<string | null>(null); // Trạng thái lỗi
+  const [selectedLocation, setSelectedLocation] = useState("TP. Hồ Chí Minh"); // Trạng thái khu vực đã chọn
+  const [showLocationDropdown, setShowLocationDropdown] = useState(false); // Trạng thái hiển thị dropdown khu vực
 
   // Danh sách khu vực
   const locations = ["TP. Hồ Chí Minh", "Đà Nẵng", "Hà Nội"];
@@ -302,8 +301,8 @@ export default function DiscoverPage() {
   // --- Filtering and Sorting ---
   const filteredAndSortedShops = useMemo(() => {
     const parseDistance = (distanceStr: string): number => {
-      const num = parseFloat(distanceStr.replace(/[^0-9.]/g, ""));
-      return isNaN(num) ? Infinity : num;
+      const num = parseFloat(distanceStr.replace(/[^0-9.]/g, "")); //regex để lấy số
+      return isNaN(num) ? Infinity : num; // Trả về Infinity nếu không phải số
     };
 
     return barberShops
@@ -311,7 +310,7 @@ export default function DiscoverPage() {
         (shop) =>
           shop.name.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
           shop.address.toLowerCase().includes(debouncedQuery.toLowerCase())
-      )
+      ) // Lọc theo tên hoặc địa chỉ
       .sort((a, b) => {
         if (filter === "distance") {
           return parseDistance(a.distance) - parseDistance(b.distance);
@@ -322,21 +321,21 @@ export default function DiscoverPage() {
           return b.reviews - a.reviews;
         }
         return 0;
-      });
-  }, [barberShops, debouncedQuery, filter]); // Không cần selectedLocation ở đây vì đã lọc ở fetch
+      }); // Sắp xếp theo khoảng cách hoặc đánh giá
+  }, [barberShops, debouncedQuery, filter]); // các dependency để cập nhật khi thay đổi
 
   // --- Handlers ---
   const handleFilter = (type: "distance" | "rating") => {
     setFilter((currentFilter) => (currentFilter === type ? "" : type));
-  };
+  }; // Hàm để chuyển đổi bộ lọc
 
   const handleAdvancedFilterClick = () => {
     alert("Chức năng lọc nâng cao đang được phát triển!");
-  };
+  }; // Hàm này sẽ mở một modal hoặc trang mới trong tương lai
 
   const handleSelectLocation = () => {
     setShowLocationDropdown((prev) => !prev);
-  };
+  }; // Hàm để hiển thị/ẩn dropdown khu vực
 
   const handleLocationChange = (location: string) => {
     setSelectedLocation(location);
@@ -344,7 +343,7 @@ export default function DiscoverPage() {
     setFilter("");
     setSearchQuery("");
     setDebouncedQuery("");
-  };
+  }; // Hàm để thay đổi khu vực và đóng dropdown
 
   // --- JSX ---
   return (

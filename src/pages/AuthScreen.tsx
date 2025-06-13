@@ -16,6 +16,9 @@ const AuthScreen: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    //chạy khi location thay đổi
+    // Lấy tham số mode từ URL
+    // Ví dụ: /auth?mode=login hoặc /auth?mode=register
     const params = new URLSearchParams(location.search);
     const mode = params.get("mode");
     if (mode === "login") {
@@ -26,6 +29,7 @@ const AuthScreen: React.FC = () => {
   }, [location]);
 
   const toggleMode = () => {
+    // Chuyển đổi giữa chế độ đăng nhập và đăng ký
     setIsLoginMode((prevMode) => !prevMode);
     setName("");
     setEmail("");
@@ -42,20 +46,20 @@ const AuthScreen: React.FC = () => {
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError(null);
+    e.preventDefault(); // Ngăn reload trang khi submit form
+    setError(null); // Xóa thông báo lỗi cũ
 
     if (isLoginMode) {
-      // Logic đăng nhập
+      // Nếu đang ở chế độ đăng nhập
       if (!email || !password) {
         setError("Vui lòng nhập Email và Mật khẩu.");
         return;
       }
       console.log("Đăng nhập với:", { email, password });
-      // Giả lập đăng nhập thành công (thay bằng gọi API thực tế)
-      navigate("/home"); // Chuyển đến HomePage sau khi đăng nhập
+
+      navigate("/home"); // Đăng nhập thành công, chuyển sang trang chủ
     } else {
-      // Logic đăng ký
+      // Nếu đang ở chế độ đăng ký
       if (!name || !email || !password) {
         setError("Vui lòng điền đầy đủ thông tin.");
         return;
@@ -65,9 +69,8 @@ const AuthScreen: React.FC = () => {
         return;
       }
       console.log("Đăng ký với:", { name, email, password });
-      // Giả lập đăng ký thành công (thay bằng gọi API thực tế)
       alert("Đăng ký thành công! Vui lòng đăng nhập.");
-      setIsLoginMode(true); // Chuyển sang chế độ đăng nhập
+      setIsLoginMode(true); // Chuyển sang chế độ đăng nhập sau khi đăng ký thành công
     }
   };
 

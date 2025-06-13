@@ -9,31 +9,39 @@ import {
   Clock,
 } from "lucide-react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+// useParams để lấy ID từ URL
 import { useState, useEffect } from "react";
 import babershop from "../assets/images/barber-shop.jpg";
 import avatar from "../assets/images/avatar.jpg";
 import baberBackground from "../assets/images/barber-background.png";
 
+// Interfaces
+
+// Định nghĩa thông tin chuyên gia
 interface Specialist {
+  id?: string;
   name: string;
   role: string;
   image: string;
 }
 
+// Định nghĩa thông tin dịch vụ
 interface Service {
-  id?: string;
+  id?: string; //pk
   name: string;
   price: string;
-  priceValue: number; // Giá trị số để tính toán
+  priceValue: number;
   duration: string;
   image: string;
-  quantity?: number; // Số lượng dịch vụ đã chọn
+  quantity?: number;
 }
 
+// Định nghĩa thông tin dịch vụ trong giỏ hàng
 interface CartItem extends Service {
   quantity: number;
 }
 
+// Định nghĩa thông tin tiệm cắt tóc
 interface BarberShop {
   id: number;
   name: string;
@@ -51,6 +59,7 @@ interface BarberShop {
   addedAt?: Date; // Track when shop was added to favorites
 }
 
+// Định nghĩa thông tin mã giảm giá
 interface Discount {
   id: string;
   title: string;
@@ -58,12 +67,13 @@ interface Discount {
   code?: string;
 }
 
+// Định nghĩa thông tin gói dịch vụ
 interface ServicePackage {
   category: string;
   services: Service[];
 }
 
-// Dữ liệu mẫu để hỗ trợ kịch bản mà state không được chuyển đúng
+// Mảng Dữ liệu mẫu để hỗ trợ kịch bản mà state không được chuyển đúng
 const sampleBarberShops: BarberShop[] = [
   {
     id: 1,
@@ -103,14 +113,176 @@ const sampleBarberShops: BarberShop[] = [
     price: 180000,
     district: "Quận 10",
   },
-  // Thêm thêm các mẫu tiệm khác nếu cần
 ];
 
+// Dữ liệu mẫu cho specialists
+const specialists: Specialist[] = [
+  { name: "Q.Long", role: "Barber", image: avatar },
+  { name: "Chí Thịnh", role: "Hair Stylist", image: avatar },
+  { name: "Văn Hợp", role: "nail", image: avatar },
+];
+
+// Dữ liệu mẫu cho các gói dịch vụ
+const servicePackages: ServicePackage[] = [
+  {
+    category: "Recommended",
+    services: [
+      {
+        name: "Cắt tóc tạo kiểu",
+        price: "100.000 VNĐ",
+        priceValue: 100000,
+        duration: "40 phút",
+        image: babershop,
+      },
+      {
+        name: "Massage cổ vai gáy",
+        price: "150.000 VNĐ",
+        priceValue: 150000,
+        duration: "20 phút",
+        image: avatar,
+      },
+      {
+        name: "Làm sạch thải độc",
+        price: "120.000 VNĐ",
+        priceValue: 120000,
+        duration: "15 phút",
+        image: baberBackground,
+      },
+      {
+        name: "Uốn con sâu",
+        price: "300.000 VNĐ",
+        priceValue: 300000,
+        duration: "90 phút",
+        image: babershop,
+      },
+    ],
+  },
+  {
+    category: "Packages",
+    services: [
+      {
+        name: "Gói Combo Cắt + Gội + Sấy",
+        price: "180.000 VNĐ",
+        priceValue: 180000,
+        duration: "60 phút",
+        image: babershop,
+      },
+      {
+        name: "Gói VIP Chăm sóc toàn diện",
+        price: "500.000 VNĐ",
+        priceValue: 500000,
+        duration: "120 phút",
+        image: avatar,
+      },
+      {
+        name: "Gói Cắt + Uốn/Nhuộm",
+        price: "450.000 VNĐ",
+        priceValue: 450000,
+        duration: "150 phút",
+        image: baberBackground,
+      },
+    ],
+  },
+  {
+    category: "Face Care",
+    services: [
+      {
+        name: "Chăm sóc da mặt cơ bản",
+        price: "90.000 VNĐ",
+        priceValue: 90000,
+        duration: "30 phút",
+        image: baberBackground,
+      },
+      {
+        name: "Đắp mặt nạ dưỡng ẩm",
+        price: "70.000 VNĐ",
+        priceValue: 70000,
+        duration: "20 phút",
+        image: babershop,
+      },
+      {
+        name: "Lấy mụn + Điện di tinh chất",
+        price: "250.000 VNĐ",
+        priceValue: 250000,
+        duration: "60 phút",
+        image: avatar,
+      },
+    ],
+  },
+  {
+    category: "Hair Color",
+    services: [
+      {
+        name: "Nhuộm màu thời trang",
+        price: "350.000 VNĐ",
+        priceValue: 350000,
+        duration: "90 phút",
+        image: avatar,
+      },
+      {
+        name: "Nhuộm phủ bạc",
+        price: "200.000 VNĐ",
+        priceValue: 200000,
+        duration: "60 phút",
+        image: babershop,
+      },
+      {
+        name: "Tẩy tóc + Nhuộm",
+        price: "600.000 VNĐ",
+        priceValue: 600000,
+        duration: "180 phút",
+        image: baberBackground,
+      },
+    ],
+  },
+  {
+    category: "Other Services",
+    services: [
+      {
+        name: "Gội đầu thư giãn",
+        price: "50.000 VNĐ",
+        priceValue: 50000,
+        duration: "20 phút",
+        image: babershop,
+      },
+      {
+        name: "Cạo râu tạo kiểu",
+        price: "80.000 VNĐ",
+        priceValue: 80000,
+        duration: "25 phút",
+        image: avatar,
+      },
+    ],
+  },
+];
+
+// Dữ liệu mẫu cho mã giảm giá
+const discounts: Discount[] = [
+  {
+    id: "d1",
+    title: "Giảm 10%",
+    description: "Sử dụng mã FREESHIP10",
+    code: "FREESHIP50",
+  },
+  {
+    id: "d2",
+    title: "Giảm 25% qua Thẻ trên 500.000 VNĐ",
+    description: "Thanh toán qua Momo",
+  },
+  {
+    id: "d3",
+    title: "Giảm 20% cho lần đầu tiên",
+    description: "Thanh toán bất kỳ",
+  },
+];
+
+// component chính của trang mô tả tiệm cắt tóc
 export default function DescriptionPage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
 
+  // In ra thông tin để kiểm tra
   console.log(
     "DescriptionPage rendered. ID:",
     id,
@@ -118,173 +290,24 @@ export default function DescriptionPage() {
     location.state
   );
 
+  // State để lưu thông tin tiệm cắt tóc
   const [barberShop, setBarberShop] = useState<BarberShop | null>(null);
+  // State để quản lý trạng thái loading, yêu thích và danh mục dịch vụ đã chọn
   const [loading, setLoading] = useState<boolean>(true);
+  // State để quản lý trạng thái yêu thích
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  // State để quản lý danh mục dịch vụ đã chọn
   const [selectedCategory, setSelectedCategory] =
     useState<string>("Recommended");
 
   // Giỏ hàng và popup
   const [cart, setCart] = useState<CartItem[]>([]);
+  // State để quản lý hiển thị popup giỏ hàng
   const [showCartPopup, setShowCartPopup] = useState<boolean>(false);
+  // State để quản lý tổng tiền trong giỏ hàng
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
-  // Dữ liệu mẫu cho specialists
-  const specialists: Specialist[] = [
-    { name: "A. Walker", role: "Sr. Barber", image: avatar },
-    { name: "N. Patel", role: "Hair Stylist", image: avatar },
-    { name: "B. Cruz", role: "Jr. Barber", image: avatar },
-  ];
-
-  // Dữ liệu mẫu cho mã giảm giá
-  const discounts: Discount[] = [
-    {
-      id: "d1",
-      title: "Giảm 50%",
-      description: "Sử dụng mã FREESHIP50",
-      code: "FREESHIP50",
-    },
-    {
-      id: "d2",
-      title: "Giảm 60% qua Thẻ",
-      description: "Thanh toán qua Momo",
-    },
-  ];
-
-  // Dữ liệu mẫu cho các gói dịch vụ
-  const servicePackages: ServicePackage[] = [
-    {
-      category: "Recommended",
-      services: [
-        {
-          name: "Cắt tóc tạo kiểu",
-          price: "100.000 VNĐ",
-          priceValue: 100000,
-          duration: "40 phút",
-          image: babershop,
-        },
-        {
-          name: "Massage cổ vai gáy",
-          price: "150.000 VNĐ",
-          priceValue: 150000,
-          duration: "20 phút",
-          image: avatar,
-        },
-        {
-          name: "Làm sạch thải độc",
-          price: "120.000 VNĐ",
-          priceValue: 120000,
-          duration: "15 phút",
-          image: baberBackground,
-        },
-        {
-          name: "Uốn con sâu",
-          price: "300.000 VNĐ",
-          priceValue: 300000,
-          duration: "90 phút",
-          image: babershop,
-        },
-      ],
-    },
-    {
-      category: "Packages",
-      services: [
-        {
-          name: "Gói Combo Cắt + Gội + Sấy",
-          price: "180.000 VNĐ",
-          priceValue: 180000,
-          duration: "60 phút",
-          image: babershop,
-        },
-        {
-          name: "Gói VIP Chăm sóc toàn diện",
-          price: "500.000 VNĐ",
-          priceValue: 500000,
-          duration: "120 phút",
-          image: avatar,
-        },
-        {
-          name: "Gói Cắt + Uốn/Nhuộm",
-          price: "450.000 VNĐ",
-          priceValue: 450000,
-          duration: "150 phút",
-          image: baberBackground,
-        },
-      ],
-    },
-    {
-      category: "Face Care",
-      services: [
-        {
-          name: "Chăm sóc da mặt cơ bản",
-          price: "90.000 VNĐ",
-          priceValue: 90000,
-          duration: "30 phút",
-          image: baberBackground,
-        },
-        {
-          name: "Đắp mặt nạ dưỡng ẩm",
-          price: "70.000 VNĐ",
-          priceValue: 70000,
-          duration: "20 phút",
-          image: babershop,
-        },
-        {
-          name: "Lấy mụn + Điện di tinh chất",
-          price: "250.000 VNĐ",
-          priceValue: 250000,
-          duration: "60 phút",
-          image: avatar,
-        },
-      ],
-    },
-    {
-      category: "Hair Color",
-      services: [
-        {
-          name: "Nhuộm màu thời trang",
-          price: "350.000 VNĐ",
-          priceValue: 350000,
-          duration: "90 phút",
-          image: avatar,
-        },
-        {
-          name: "Nhuộm phủ bạc",
-          price: "200.000 VNĐ",
-          priceValue: 200000,
-          duration: "60 phút",
-          image: babershop,
-        },
-        {
-          name: "Tẩy tóc + Nhuộm",
-          price: "600.000 VNĐ",
-          priceValue: 600000,
-          duration: "180 phút",
-          image: baberBackground,
-        },
-      ],
-    },
-    {
-      category: "Other Services",
-      services: [
-        {
-          name: "Gội đầu thư giãn",
-          price: "50.000 VNĐ",
-          priceValue: 50000,
-          duration: "20 phút",
-          image: babershop,
-        },
-        {
-          name: "Cạo râu tạo kiểu",
-          price: "80.000 VNĐ",
-          priceValue: 80000,
-          duration: "25 phút",
-          image: avatar,
-        },
-      ],
-    },
-  ];
-
+  // In ra thông tin giỏ hàng để kiểm tra
   useEffect(() => {
     console.log("useEffect triggered in DescriptionPage. ID:", id);
     setLoading(true);
@@ -355,6 +378,7 @@ export default function DescriptionPage() {
     setTotalPrice(newTotal);
   }, [cart]);
 
+  // Hàm để chuyển đổi giá trị tiền tệ sang định dạng Việt Nam
   const toggleFavorite = () => {
     if (!barberShop) return;
 
@@ -396,6 +420,7 @@ export default function DescriptionPage() {
     }
   };
 
+  // Hàm để xử lý đặt lịch
   const handleBookNow = () => {
     // Chuyển đến trang thanh toán với dữ liệu giỏ hàng
     navigate("/payment", {
@@ -407,12 +432,14 @@ export default function DescriptionPage() {
     });
   };
 
+  // Hàm để xử lý khi người dùng nhấn nút "Đặt lịch ngay"
   const handleProceedToCheckout = () => {
     // Đóng popup và chuyển đến trang thanh toán
     setShowCartPopup(false);
     handleBookNow();
   };
 
+  // Hàm để thêm dịch vụ vào giỏ hàng
   const handleAddService = (service: Service) => {
     // Tạo bản sao của giỏ hàng hiện tại
     const updatedCart = [...cart];
@@ -438,6 +465,7 @@ export default function DescriptionPage() {
     setShowCartPopup(true);
   };
 
+  // Hàm để xử lý khi người dùng nhấn nút "Xóa" dịch vụ khỏi giỏ hàng
   const handleRemoveService = (serviceName: string) => {
     const updatedCart = cart.filter((item) => item.name !== serviceName);
     setCart(updatedCart);
@@ -448,6 +476,7 @@ export default function DescriptionPage() {
     }
   };
 
+  // Hàm để cập nhật số lượng dịch vụ trong giỏ hàng
   const handleUpdateQuantity = (serviceName: string, newQuantity: number) => {
     if (newQuantity <= 0) {
       // Nếu số lượng <= 0, xóa dịch vụ khỏi giỏ hàng
@@ -465,6 +494,7 @@ export default function DescriptionPage() {
     setCart(updatedCart);
   };
 
+  // Nếu đang tải dữ liệu hoặc không có dữ liệu tiệm cắt tóc, hiển thị màn hình tải dữ liệu
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-white">

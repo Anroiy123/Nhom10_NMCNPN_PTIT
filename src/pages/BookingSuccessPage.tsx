@@ -39,7 +39,7 @@ export default function BookingSuccessPage() {
   const services = location.state?.services || [];
 
   // Hiệu ứng đếm ngược chuyển về trang Booking
-  const [countdown, setCountdown] = useState<number>(5);
+  const [countdown, setCountdown] = useState<number>(5); //
 
   useEffect(() => {
     if (countdown > 0) {
