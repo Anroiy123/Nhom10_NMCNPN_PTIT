@@ -279,6 +279,7 @@ const discounts: Discount[] = [
 // component chính của trang mô tả tiệm cắt tóc
 export default function DescriptionPage() {
   const navigate = useNavigate();
+  // Lấy ID từ URL để xác định tiệm cắt tóc cụ thể cần hiển thị
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
 
@@ -292,7 +293,7 @@ export default function DescriptionPage() {
 
   // State để lưu thông tin tiệm cắt tóc
   const [barberShop, setBarberShop] = useState<BarberShop | null>(null);
-  // State để quản lý trạng thái loading, yêu thích và danh mục dịch vụ đã chọn
+  // State để quản lý trạng thái loading
   const [loading, setLoading] = useState<boolean>(true);
   // State để quản lý trạng thái yêu thích
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
@@ -378,7 +379,7 @@ export default function DescriptionPage() {
     setTotalPrice(newTotal);
   }, [cart]);
 
-  // Hàm để chuyển đổi giá trị tiền tệ sang định dạng Việt Nam
+  // hàm để xử lý khi người dùng nhấn nút yêu thích
   const toggleFavorite = () => {
     if (!barberShop) return;
 
@@ -467,7 +468,8 @@ export default function DescriptionPage() {
 
   // Hàm để xử lý khi người dùng nhấn nút "Xóa" dịch vụ khỏi giỏ hàng
   const handleRemoveService = (serviceName: string) => {
-    const updatedCart = cart.filter((item) => item.name !== serviceName);
+    const updatedCart = cart.filter((item) => item.name !== serviceName); // tạo mảng mới không có dịch vụ cần xoá
+
     setCart(updatedCart);
 
     // Đóng popup nếu không còn dịch vụ nào

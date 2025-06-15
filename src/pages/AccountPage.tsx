@@ -16,11 +16,10 @@ import {
   X,
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
-// import 2 hook của thư viện React Router.
+
 import { useState, useEffect } from "react";
 import avatar from "../assets/images/avatar.jpg";
 
-// Interface for favorite salon
 interface FavoriteSalon {
   id: number;
   name: string;
@@ -819,6 +818,7 @@ export default function AccountPage() {
     localStorage.setItem("barberShopUser", JSON.stringify(user));
   }, [user]);
 
+  // Hàm xử lý khi người dùng nhấp vào một mục trong menu
   const handleMenuClick = (path: string) => {
     if (path === "#favorite") {
       // Hiển thị modal salon yêu thích
